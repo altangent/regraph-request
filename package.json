@@ -1,8 +1,8 @@
 {
   "name": "regraph-request",
-  "version": "1.0.0",
+  "version": "0.0.3",
   "description": "Simple React GraphQL requests",
-  "author": "camray",
+  "author": "Cameron Ray <cameron@cameronray.net>",
   "license": "MIT",
   "repository": "altangent/regraph-request",
   "main": "dist/index.js",
@@ -12,6 +12,10 @@
     "node": ">=8",
     "npm": ">=5"
   },
+  "keywords": [
+    "graphql",
+    "react"
+  ],
   "scripts": {
     "test": "cross-env CI=1 react-scripts test --env=jsdom",
     "test:watch": "react-scripts test --env=jsdom",

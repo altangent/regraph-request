@@ -1,23 +1,28 @@
 {
   "parser": "babel-eslint",
-  "extends": [
-    "standard",
-    "standard-react"
-  ],
-  "env": {
-    "es6": true
-  },
-  "plugins": [
-    "react"
-  ],
   "parserOptions": {
+    "ecmaVersion": 8,
     "sourceType": "module"
   },
+  "env": {
+    "browser": true,
+    "node": true,
+    "mocha": true,
+    "es6": true,
+    "jest/globals": true
+  },
+  "extends": ["eslint:recommended", "plugin:react/recommended"],
+  "plugins": ["jest"],
   "rules": {
-    // don't force es6 functions to include space before paren
-    "space-before-function-paren": 0,
-
-    // allow specifying true explicitly for boolean props
-    "react/jsx-boolean-value": 0
+    "no-console": 0,
+    "quotes": [2, "single"],
+    "semi": [2, "always"],
+    "comma-dangle": 0
+  },
+  "overrides": {
+    "files": "*.test.js",
+    "rules": {
+      "no-undef": "off"
+    }
   }
 }
