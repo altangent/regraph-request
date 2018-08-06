@@ -2,7 +2,7 @@
 
 > Simple React GraphQL requests
 
-[![NPM](https://img.shields.io/npm/v/regraph-request.svg)](https://www.npmjs.com/package/regraph-request) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![NPM](https://img.shields.io/npm/v/regraph-request.svg)](https://www.npmjs.com/package/regraph-request)
 
 ## Install
 
@@ -13,19 +13,32 @@ npm install --save regraph-request
 ## Usage
 
 ```jsx
-import React, { Component } from 'react'
+import React from 'react';
+import { Query } from 'regraph-request';
 
-import MyComponent from 'regraph-request'
-
-class Example extends Component {
-  render () {
-    return (
-      <MyComponent />
-    )
+const QUERY = `
+  query Test(
+    $inputName: String
+  ) {
+    hello(name: $inputName)
   }
-}
+`;
+
+export const HelloComponent = ({ data }) => {
+  if (!data.hello) return <div />;
+  return <div>{data.hello}</div>;
+};
+
+export const Hello = Query(
+  HelloComponent,
+  QUERY,
+  props => ({
+    inputName: props.username,
+  }),
+  'http://localhost:3000/graphql'
+);
 ```
 
 ## License
 
-MIT © [camray](https://github.com/camray)
+MIT © [Altangent](https://github.com/altangent)
