@@ -26,18 +26,26 @@ class Inner extends Component {
     return adHocRequest(this.props.url, this.props.query, vars)
       .then(res => {
         vars.data = res.data;
-        return this.setState(vars);
+        return new Promise(resolve => {
+          this.setState(vars, () => {
+            resolve(vars);
+          });
+        });
       })
       .catch(err => {
         vars.data = { err };
-        return this.setState(vars);
+        return new Promise(resolve => {
+          this.setState(vars, () => {
+            resolve(vars);
+          });
+        });
       });
   }
 
   render() {
     let props = Object.assign({}, this.props, {
       data: this.state.data ? this.state.data : {},
-      getData: variables => this.getData(this.props.url, variables),
+      getData: this.getData,
     });
     let WrappedComponent = this.props.component;
     return <WrappedComponent {...props} />;

@@ -1,6 +1,6 @@
 {
   "name": "regraph-request",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Simple React GraphQL requests",
   "author": "Cameron Ray <cameron@cameronray.net>",
   "license": "MIT",
