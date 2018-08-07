@@ -14,6 +14,7 @@ npm install --save regraph-request
 
 ```jsx
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Query } from 'regraph-request';
 
 const QUERY = `
@@ -29,14 +30,21 @@ export const HelloComponent = ({ data }) => {
   return <div>{data.hello}</div>;
 };
 
-export const Hello = Query(
-  HelloComponent,
-  QUERY,
-  props => ({
-    inputName: props.username,
-  }),
-  'http://localhost:3000/graphql'
-);
+HelloComponent.propTypes = {
+  username: PropTypes.string,
+};
+
+export const Hello = Query(HelloComponent, QUERY, props => ({
+  inputName: props.username,
+}));
+
+export const App = () => {
+  return (
+    <RegraphRequest value="https://example.com/graphql">
+      <Hello />
+    </RegraphRequest>
+  );
+};
 ```
 
 ## License

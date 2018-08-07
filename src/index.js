@@ -1,48 +1,60 @@
-import React from 'react';
-const HOST = process.env.GRAPHQL_HOST || 'http://localhost:8001/graphql';
+import React, { Component } from 'react';
+const HOST = 'http://localhost:8001/graphql';
+const QueryContext = React.createContext(HOST);
 
-export const Query = (WrappedComponent, query, variables = () => {}, host = HOST) => {
-  class WithRequest extends React.Component {
-    constructor(props) {
-      super(props);
-      this.getData = this.getData.bind(this);
-      this.state = {
-        data: {},
-      };
-      this.getData(variables(props));
-    }
+export const RegraphRequest = QueryContext.Provider;
 
-    componentDidUpdate(prevProps) {
-      if (JSON.stringify(this.props) !== JSON.stringify(prevProps))
-        this.getData(variables(this.props));
-    }
+class Inner extends Component {
+  constructor(props) {
+    super(props);
+    this.getData = this.getData.bind(this);
+    this.state = {
+      data: {},
+    };
+    this.getData(this.props.variables(props));
+  }
 
-    getData(variables) {
-      let vars = Object.assign({}, this.state, variables);
-      vars.data = undefined;
-      return adHocRequest(host, query, vars)
-        .then(res => {
-          vars.data = res.data;
-          this.setState(vars);
-        })
-        .catch(err => {
-          vars.data = { err };
-          this.setState(vars);
-        });
-    }
-
-    render() {
-      return React.createElement(
-        WrappedComponent,
-        Object.assign({}, this.props, {
-          data: this.state.data ? this.state.data : {},
-          getData: this.getData,
-        })
-      );
+  componentDidUpdate(prevProps) {
+    if (JSON.stringify(this.props) !== JSON.stringify(prevProps)) {
+      this.getData(this.props.variables(this.props));
     }
   }
 
-  return WithRequest;
+  getData(variables) {
+    let vars = Object.assign({}, this.state, variables);
+    vars.data = undefined;
+    return adHocRequest(this.props.url, this.props.query, vars)
+      .then(res => {
+        vars.data = res.data;
+        return this.setState(vars);
+      })
+      .catch(err => {
+        vars.data = { err };
+        return this.setState(vars);
+      });
+  }
+
+  render() {
+    let props = Object.assign({}, this.props, {
+      data: this.state.data ? this.state.data : {},
+      getData: variables => this.getData(this.props.url, variables),
+    });
+    let WrappedComponent = this.props.component;
+    return <WrappedComponent {...props} />;
+  }
+}
+
+export const Query = (component, query, variables = () => {}) => {
+  return class extends Component {
+    render() {
+      let props = Object.assign({}, this.props, {
+        component,
+        query,
+        variables,
+      });
+      return <QueryContext.Consumer>{url => <Inner url={url} {...props} />}</QueryContext.Consumer>;
+    }
+  };
 };
 
 export const adHocRequest = (host, query, variables) => {
