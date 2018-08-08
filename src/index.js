@@ -65,6 +65,13 @@ export const Query = (component, query, variables = () => {}) => {
   };
 };
 
+export class QueryComponent extends Component {
+  render() {
+    let props = Object.assign({}, this.props);
+    return <QueryContext.Consumer>{url => <Inner url={url} {...props} />}</QueryContext.Consumer>;
+  }
+}
+
 export const adHocRequest = (host, query, variables) => {
   return fetch(host, {
     method: 'POST',
